@@ -75,12 +75,22 @@ WSGI_APPLICATION = 'notes.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+import os
+
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+# Use PostgreSQL in Docker, SQLite for local development
+if os.environ.get('DATABASE_URL'):
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'notes_db',
+            'USER': 'notes_user',
+            'PASSWORD': 'notes_password',
+            'HOST': 'db',
+            'PORT': '5432',
+        }
     }
-}
 
 
 # Password validation
@@ -127,3 +137,6 @@ STATIC_URL = '/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'user.CustomUser'
+
+# Disable trailing slash requirement
+APPEND_SLASH = False
